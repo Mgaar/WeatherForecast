@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/statusbar"
+    tools:context=".ui.home.view.HomeFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/homeFragmentCityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/city"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/homeFragmentSunriseFixedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/sunr"
+                android:textColor="@color/white"
+
+                app:layout_constraintEnd_toStartOf="@+id/homeFragmentSunriseTextView"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+
+            <TextView
+                android:id="@+id/homeFragmentSunsetFixedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/suns"
+
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@+id/homeFragmentSunsetImageView"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+            <ImageView
+                android:id="@+id/homeFragmentSunriseImageView"
+                android:layout_width="17dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/sunrise"
+                app:layout_constraintEnd_toStartOf="@+id/homeFragmentSunriseFixedTextView"
+                app:layout_constraintTop_toTopOf="@+id/homeFragmentSunriseFixedTextView" />
+
+
+            <ImageView
+                android:id="@+id/homeFragmentSunsetImageView"
+                android:layout_width="17dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/sunset"
+                app:layout_constraintStart_toEndOf="@+id/homeFragmentDotImageView"
+                app:layout_constraintTop_toTopOf="@+id/homeFragmentSunriseFixedTextView" />
+
+            <ImageView
+                android:id="@+id/homeFragmentDotImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:src="@android:drawable/radiobutton_off_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+            <TextView
+                android:id="@+id/homeFragmentWeatherDescriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/weatherdescription"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentCityTextView" />
+
+            <TextView
+                android:id="@+id/homeFragmentMainTempDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tes"
+                android:textColor="@color/white"
+                android:textSize="120sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentWeatherDescriptionTextView" />
+
+            <TextView
+                android:id="@+id/homeFragmentDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="o"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@+id/homeFragmentMainTempDegree"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentWeatherDescriptionTextView" />
+
+            <TextView
+                android:id="@+id/homeFragUnitTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/celsius"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                app:layout_constraintStart_toEndOf="@+id/homeFragmentDegree"
+                app:layout_constraintTop_toTopOf="@+id/homeFragmentDegree" />
+
+            <TextView
+                android:id="@+id/homeFragTodayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="110dp"
+                android:text="Sat , 20 Oct"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentMainTempDegree" />
+
+            <TextView
+                android:id="@+id/homeFragmentCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="12:30 PM"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@+id/homeFragTodayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentMainTempDegree" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeFragmentHourlyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:scrollbars="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                tools:itemCount="1"
+                tools:listitem="@layout/hourweatherlayout" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeFragmentDailyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="85dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentHourlyRecyclerView"
+                tools:itemCount="15"
+                tools:listitem="@layout/dayweatherlayout" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/cardcolor"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragmentDotImageView">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/homeFragmentCloudsUnitCardViewTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="%"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/homeFragmentCloudsTextView"
+                        app:layout_constraintStart_toEndOf="@+id/homeFragmentCloudsTextView" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentCloudsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="98"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toStartOf="@+id/homeFragmentFixedCloudsTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/homeFragmentFixedHumidityTitle" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentFixedCloudsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="100dp"
+                        android:text="@string/clouds"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="@+id/homeFragmentFixedWindSpeedTitle"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentWindSpeedTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="9.81"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toStartOf="@+id/homeFragmentFixedWindSpeedTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/homeFragmentFixedWindSpeedTitle" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentWindSpeedUnitCardViewTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/meterpersec"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="@+id/homeFragmentWindSpeedTextView"
+                        app:layout_constraintStart_toEndOf="@+id/homeFragmentWindSpeedTextView" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentFixedWindSpeedTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/windspeed"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentPressureUnitCardViewTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hpa"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="@+id/homeFragmentPressureTextView"
+                        app:layout_constraintStart_toEndOf="@+id/homeFragmentPressureTextView" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentPressureTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="981"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toStartOf="@+id/homeFragmentFixedPressureTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/homeFragmentFixedPressureTitle" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentFixedPressureTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/pressure"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentHumidityUnitCardViewTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="%"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/homeFragmentHumidityTextView"
+                        app:layout_constraintStart_toEndOf="@+id/homeFragmentHumidityTextView" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentHumidityTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="98"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toStartOf="@+id/homeFragmentFixedHumidityTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/homeFragmentFixedHumidityTitle" />
+
+                    <TextView
+                        android:id="@+id/homeFragmentFixedHumidityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="100dp"
+                        android:text="@string/humidity"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/homeFragmentCardViewWeatherIcon"
+                        android:layout_width="100dp"
+                        android:layout_height="80dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:src="@drawable/sun" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/homeFragmentSunriseTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/sunrise"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@+id/homeFragmentDotImageView"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+            <TextView
+                android:id="@+id/homeFragmentSunsetTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/sunset"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@+id/homeFragmentSunsetFixedTextView"
+                app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

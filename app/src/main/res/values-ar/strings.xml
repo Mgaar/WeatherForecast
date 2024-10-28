@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">توقعات الطقس </string>
+    <string name="title_home">الرئيسية </string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">الاشعارات</string>
+    <string name="title_favourite">المفضلة</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="city">City</string>
+    <string name="weatherdescription">"Weather Description "</string>
+    <string name="tes">20</string>
+    <string name="windspeed">سرعة الرياح</string>
+    <string name="sunrise">"06:00 AM "</string>
+    <string name="sunr">"الشروق "</string>
+    <string name="pressure">الضغط</string>
+    <string name="clouds">السحب</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="sunset">06:00PM</string>
+    <string name="suns">"الغروب "</string>
+    <string name="title_settings">الاعدادات</string>
+    <string name="unitsofmeasurment">وحدات القياس</string>
+    <string name="language">اللغة</string>
+    <string name="location">الموقع</string>
+
+    <string name="celsius">C</string>
+    <string name="fahrenheit">F</string>
+    <string name="kelvin">K</string>
+
+    <string name="tempunit">الحرارة</string>
+    <string name="windunit">سرعة الرياح</string>
+
+    <string name="meterpersec">م/ث</string>
+    <string name="mileperhou">ميل/س</string>
+    <string name="hpa">هيكتوبسكال</string>
+    <string name="am">ص</string>
+    <string name="pm">م</string>
+    <string-array name="languagesoptions">
+        <item>العربية</item> <!-- Arabic in Arabic script -->
+        <item>الإنجليزية</item> <!-- English in Arabic script -->
+        <item>لغة الجهاز</item>
+    </string-array>
+
+    <string-array name="languagesvalues">
+        <item>0</item> <!-- Arabic -->
+        <item>1</item> <!-- English -->
+        <item>2</item> <!-- English -->
+    </string-array>
+
+
+    <string-array name="tempoptions">
+        <item>سليزيوس </item>
+        <item>فهرنهايت</item>
+        <item>كلفن</item>
+    </string-array>
+
+    <string-array name="tempvalues">
+        <item>0</item> <!-- Celsius -->
+        <item>1</item> <!-- Fahrenheit -->
+        <item>2</item> <!-- kelvin -->
+    </string-array>
+
+    <string-array name="windoptions">
+        <item>متر/الثانية </item>
+        <item>ميل/الساعة</item>
+    </string-array>
+
+    <string-array name="windvalues">
+        <item>0</item> <!--meter/sec -->
+        <item>1</item> <!-- miles/hour -->
+    </string-array>
+
+    <string-array name="locationoptions">
+        <item>موقعي </item>
+        <item>الخريطة</item>
+    </string-array>
+
+    <string-array name="locationvalues">
+        <item>0</item> <!--GPS -->
+        <item>1</item> <!-- map -->
+    </string-array>
+</resources>

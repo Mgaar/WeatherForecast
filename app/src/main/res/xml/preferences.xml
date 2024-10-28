@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory android:title="@string/language">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/languagesoptions"
+            android:entryValues="@array/languagesvalues"
+            android:key="list_preference_1"
+            android:title="@string/language"
+
+            />
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory android:title="@string/unitsofmeasurment">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/tempoptions"
+            android:entryValues="@array/tempvalues"
+            android:key="list_preference_2"
+            android:title="@string/tempunit"
+
+            />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/windoptions"
+            android:entryValues="@array/windvalues"
+            android:key="list_preference_3"
+            android:title="@string/windunit"
+
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/location">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/locationoptions"
+            android:entryValues="@array/locationvalues"
+            android:key="list_preference_4"
+            android:title="@string/location"
+
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

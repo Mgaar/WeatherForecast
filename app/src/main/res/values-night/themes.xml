@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.WeatherForecast" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/white
+        </item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/statusbar</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/statusbar</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/statusbar</item>
+        <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor">@color/statusbar</item>
+
+    </style>
+
+    <style name="CustomDialogStyle" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:background">@color/statusbar</item> <!-- Change to your desired color -->
+    </style>
+
+</resources>
