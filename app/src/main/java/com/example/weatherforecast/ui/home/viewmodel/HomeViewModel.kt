@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(val repo: Repository) : ViewModel() {
 
+    private var lat:Double = 0.0
+    private var lon:Double = 0.0
+
     private  var _postWeatherStateFlow: MutableStateFlow<DataState> = MutableStateFlow(DataState.Loading) //Observable -> emit
     var postWeatherStateFlow : StateFlow<DataState> = _postWeatherStateFlow
 
@@ -25,9 +28,26 @@ class HomeViewModel(val repo: Repository) : ViewModel() {
     fun getMainLocationMapPreferencesLat():Float = repo.getMainLocationMapPreferencesLat()
     fun getMainLocationMapPreferencesLon():Float = repo.getMainLocationMapPreferencesLon()
 
-    fun getWeather(isNetworkAvailable: Boolean,lat:Double,lon:Double,tempUnit:String,windSpeedUnit:String) {
-        getForecastWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
-        getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+    fun getGPSLocation(onLocationReceived: (Double, Double) -> Unit) = repo.getGPSLocation(onLocationReceived)
+
+    fun getWeather(isNetworkAvailable: Boolean,tempUnit:String,windSpeedUnit:String) {
+       if(repo.getLocationPreferences() == "0")
+       {
+          getGPSLocation{lat,lon->
+              this@HomeViewModel.lat = lat
+              this@HomeViewModel.lon = lon
+              getForecastWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+              getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+
+          }
+       }
+       else {
+lat = getMainLocationMapPreferencesLat().toDouble()
+           lon = getMainLocationMapPreferencesLon().toDouble()
+           getForecastWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+           getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+
+       }
     }
 
     fun getForecastWeather(isNetworkAvailable: Boolean,lat:Double,lon:Double,tempUnit:String,windSpeedUnit:String){
@@ -149,6 +169,7 @@ if (i.dt_txt?.substringBefore(" ") == today)
         }
 
     }
+
 }
 
 
@@ -162,38 +183,3 @@ class HomeFragmentViewModelFactory(val repo: Repository): ViewModelProvider.Fact
         }
     }
 }
-
-/*
- if (weatherDto.dayList.isNullOrEmpty()){}
-            else{
-                for (i in weatherDto.dayList)
-                {
-                    i.main.temp_max = ( i.main.temp_max * 2) + 30
-                    i.main.temp_min = ( i.main.temp_min * 2) + 30
-                }
-            }
-            if (weatherDto.hourList.isNullOrEmpty()){}
-            else{
-                for (i in weatherDto.hourList)
-                {
-
-
-                }
-            }
-
-             if (weatherDto.dayList.isNullOrEmpty()) {
-            } else {
-                for (i in weatherDto.dayList) {
-                    i.main.temp_max = i.main.temp_max + 273.15
-                    i.main.temp_min = i.main.temp_min + 273.15
-                }
-            }
-            if (weatherDto.hourList.isNullOrEmpty()) {
-            } else {
-                for (i in weatherDto.hourList) {
-
-
-                }
-
-            }
- */

@@ -40,7 +40,7 @@ lateinit var intent: Intent
             if(newValue == "1")
             {
                 intent = Intent(this@SettingsFragment.requireActivity(),MapActivity::class.java)
-
+intent.putExtra("source","settings")
                 startActivity(intent)
             }
         true

@@ -30,6 +30,15 @@
     <string name="hpa">hpa</string>
     <string name="am">AM</string>
     <string name="pm">PM</string>
+    <string name="select">Select</string>
+    <string name="display"><![CDATA[>]]></string>
+    <string name="back"><![CDATA[<]]></string>
+    <string name="notifyat">notify at</string>
+    <string name="notifyby">Notify Me By\n</string>
+    <string name="nottime">Notification time</string>
+    <string name="notfor">Notification For</string>
+    <string name="alarm">Alarm</string>
+    <string name="notification">Notification</string>
 
     <string-array name="languagesoptions">
         <item>Arabic</item>

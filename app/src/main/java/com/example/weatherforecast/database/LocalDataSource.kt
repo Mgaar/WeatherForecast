@@ -2,6 +2,8 @@ package com.example.weatherforecast.database
 
 import android.content.SharedPreferences
 import com.example.weatherforecast.model.CurrentWeather
+import com.example.weatherforecast.model.FavCity
+import com.example.weatherforecast.model.NotificationCity
 import com.example.weatherforecast.model.WeatherDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -52,8 +54,15 @@ fun setHomeLocationMapPreferences(lat:Double,lon:Double){
         apply() // Use apply to save changes asynchronously
     }
 }
-
     fun getMainLocationMapPreferencesLat():Float= sharedPreferences.getFloat("mainlat", 0.0f)
     fun getMainLocationMapPreferencesLon():Float= sharedPreferences.getFloat("mainlon", 0.0f)
 
+       suspend fun addFavCity (favCity: FavCity)=weatherDAO.addFavCity(favCity)
+    suspend fun removeFavCity(favCity: FavCity)=weatherDAO.removeFavCity(favCity)
+    fun getAllCity()=weatherDAO.getAllFav()
+
+    suspend fun addNotificatioCity (notificationCity: NotificationCity)=weatherDAO.addNotificationCity(notificationCity)
+    suspend fun removeNotificationCity(notificationCity: NotificationCity)=weatherDAO.removeNotificationCity(notificationCity)
+   suspend fun removeNotificationCityById(id:String)=weatherDAO.removeNotificationCityById(id)
+    fun getAllNotificationCity()=weatherDAO.getAllNotification()
 }

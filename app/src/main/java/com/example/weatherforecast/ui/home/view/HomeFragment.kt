@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.weatherforecast.R
 import com.example.weatherforecast.database.LocalDataSource
+import com.example.weatherforecast.database.LocationDataSource
 import com.example.weatherforecast.database.WeatherDataBase
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.model.DataState
@@ -26,29 +27,13 @@ import com.example.weatherforecast.ui.home.viewmodel.HomeFragmentViewModelFactor
 import com.example.weatherforecast.ui.home.viewmodel.HomeViewModel
 import com.example.weatherforecast.ui.settings.viewmodel.SettingsFragmentViewModelFactory
 import com.example.weatherforecast.ui.settings.viewmodel.SettingsViewModel
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
-
-
-fun convertUtcToLocalTime(utcTimeInSeconds: Long, utcOffsetSeconds: Int): String {
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    calendar.timeInMillis = utcTimeInSeconds * 1000
-
-    calendar.add(Calendar.MILLISECOND, utcOffsetSeconds*1000)
-
-    val dateFormat = SimpleDateFormat("EEE, dd MMM hh:mm a")
-    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-
-    return dateFormat.format(calendar.time)
-}
-
-
-
-
 
 
 class HomeFragment : Fragment() {
@@ -90,10 +75,13 @@ class HomeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
+
         settingsFragmentViewModelFactory = SettingsFragmentViewModelFactory(Repository.getInstance(remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper)
             ,LocalDataSource.getInstance(WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO()
-                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context))
+                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context)
+            ),LocationDataSource.getInstance(LocationServices.getFusedLocationProviderClient(requireActivity()))
              ))
+
         settingsViewModel = ViewModelProvider(this,settingsFragmentViewModelFactory).get(SettingsViewModel::class.java)
 
 
@@ -108,19 +96,14 @@ class HomeFragment : Fragment() {
 
         homeFragmentViewModelFactory = HomeFragmentViewModelFactory(Repository.getInstance(remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper)
             ,LocalDataSource.getInstance(WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO()
-                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context))
-        ))
+                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context)),
+            LocationDataSource.getInstance(LocationServices.getFusedLocationProviderClient(requireActivity())
+        )))
+
         viewModel=ViewModelProvider(this,homeFragmentViewModelFactory).get(HomeViewModel::class.java)
 
-        if (locationPref == "0")
-        {
 
-        }
-        else
-        {
-            lat =viewModel.getMainLocationMapPreferencesLat()
-            lon = viewModel.getMainLocationMapPreferencesLon()
-        }
+
        hourListAdapter = HomeFragmentHourlyListAdapter(tempUnitPref)
         hourLayoutManager = LinearLayoutManager(this.context)
         hourLayoutManager.orientation = RecyclerView.HORIZONTAL
@@ -137,7 +120,17 @@ class HomeFragment : Fragment() {
             layoutManager = dayLayoutManager
         }
 
+        if (arguments?.getString("source")?:"home" == "fav")
+        {
+            var lat = arguments?.getDouble("lat") as Double
+            var lon = arguments?.getDouble("lon") as Double
+            viewModel.getForecastWeather(true,lat,lon,tempUnitPref,windSpeedPref)
+            viewModel.getCurrentWeather(true,lat,lon,tempUnitPref,windSpeedPref)
+        }
+        else {
+            viewModel.getWeather(true,tempUnitPref,windSpeedPref)
 
+        }
 
         when (tempUnitPref){
             "1" -> {binding.homeFragUnitTextView.text = getString(R.string.fahrenheit)}
@@ -192,7 +185,17 @@ class HomeFragment : Fragment() {
             }
         } }
 
-        viewModel.getWeather(true,lat.toDouble(), lon.toDouble(),tempUnitPref,windSpeedPref)
+    }
+    fun convertUtcToLocalTime(utcTimeInSeconds: Long, utcOffsetSeconds: Int): String {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.timeInMillis = utcTimeInSeconds * 1000
+
+        calendar.add(Calendar.MILLISECOND, utcOffsetSeconds*1000)
+
+        val dateFormat = SimpleDateFormat("EEE, dd MMM hh:mm a")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        return dateFormat.format(calendar.time)
     }
     override fun onDestroyView() {
         super.onDestroyView()

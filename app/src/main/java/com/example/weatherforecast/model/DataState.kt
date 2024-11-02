@@ -6,3 +6,4 @@ sealed class DataState {
     class Failure(val msg: Throwable) : DataState()
     object Loading : DataState()
 }
+

@@ -20,6 +20,16 @@
     <string name="unitsofmeasurment">وحدات القياس</string>
     <string name="language">اللغة</string>
     <string name="location">الموقع</string>
+    <string name="select">اختيار</string>
+    <string name="display"><![CDATA[<]]></string>
+    <string name="back"><![CDATA[>]]></string>
+    <string name="notifyat">وقت التنبيه</string>
+    <string name="notifyby">التبيه بواسطة\n</string>
+    <string name="nottime">وقت التنبيه</string>
+    <string name="notfor">الموقع</string>
+    <string name="alarm">منبه</string>
+    <string name="notification">اشعار</string>
+
 
     <string name="celsius">C</string>
     <string name="fahrenheit">F</string>
