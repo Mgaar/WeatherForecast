@@ -8,6 +8,7 @@
     tools:context=".ui.home.view.HomeFragment">
 
     <ScrollView
+        android:id="@+id/homeScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,7 +16,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/statusbar">
 
             <TextView
                 android:id="@+id/homeFragmentCityTextView"
@@ -358,6 +360,18 @@
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/homeFragmentSunsetFixedTextView"
                 app:layout_constraintTop_toBottomOf="@+id/homeFragTodayTextView" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/homeFragmentReloadButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:src="@android:drawable/stat_notify_sync"
+                app:backgroundTint="@color/statusbar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

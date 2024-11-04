@@ -12,6 +12,7 @@ import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.DayweatherlayoutBinding
 import com.example.weatherforecast.databinding.HourweatherlayoutBinding
 import com.example.weatherforecast.model.WeatherData
+import com.example.weatherforecast.ui.translateWeatherDescription
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -83,11 +84,12 @@ class HomeFragmentDailyListAdapter: ListAdapter<WeatherData, HomeFragmentDailyLi
         val current = getItem(position)
         holder.binding.homeFragmentDailyTempSmallDegree.text = numberFormat.format(current.main.temp_min.toInt())
         holder.binding.homeFragmentDailyGreatTempDegree.text = numberFormat.format(current.main.temp_max.toInt())
-        holder.binding.HomeFragmentDailyDetailsTextView.text = current.weather.get(0).description
+        holder.binding.HomeFragmentDailyDetailsTextView.text =translateWeatherDescription(current.weather.get(0).description.toString(),Locale.getDefault())
+
         val date: Date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(
             current.dt_txt.substring(0,11)
         )
-        holder.binding.homeFragmentDailyDayTextView.text= SimpleDateFormat("EEE dd/MM", Locale.getDefault()).format(date)
+        holder.binding.homeFragmentDailyDayTextView.text= SimpleDateFormat("EEE ", Locale.getDefault()).format(date)
 
         Glide.with(holder.itemView.context).load(URL + current.weather?.get(0)?.icon+"@2x.png").apply(
             RequestOptions().override(150, 150)).into( binding.homeFragmentDailyIcon)

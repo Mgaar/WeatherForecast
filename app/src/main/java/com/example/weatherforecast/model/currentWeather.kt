@@ -25,7 +25,9 @@ data class CurrentWeather (
         var sys: MySys,
         var timezone: Int ,
         @PrimaryKey
-        var id: Int,
+        var id: Int=1,
         var name: String,
+        var nameArabic: String,
         var cod: Int,
+
 ):Serializable

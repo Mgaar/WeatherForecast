@@ -1,6 +1,6 @@
 package com.example.weatherforecast.ui.home.view
-
 import android.content.Context
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,14 +25,17 @@ import com.example.weatherforecast.network.RemoteDataSource
 import com.example.weatherforecast.network.RetrofitHelper
 import com.example.weatherforecast.ui.home.viewmodel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.ui.home.viewmodel.HomeViewModel
+import com.example.weatherforecast.ui.isOnline
 import com.example.weatherforecast.ui.settings.viewmodel.SettingsFragmentViewModelFactory
 import com.example.weatherforecast.ui.settings.viewmodel.SettingsViewModel
+import com.example.weatherforecast.ui.translateWeatherDescription
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
 
 
@@ -56,7 +59,7 @@ class HomeFragment : Fragment() {
     lateinit var windSpeedPref:String
     lateinit var languagePref:String
     lateinit var locationPref:String
-
+ var isNetwork:Boolean = false
     var lat:Float = 30.071184f
      var lon:Float = 31.021251f
 
@@ -76,127 +79,201 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        settingsFragmentViewModelFactory = SettingsFragmentViewModelFactory(Repository.getInstance(remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper)
-            ,LocalDataSource.getInstance(WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO()
-                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context)
-            ),LocationDataSource.getInstance(LocationServices.getFusedLocationProviderClient(requireActivity()))
-             ))
 
-        settingsViewModel = ViewModelProvider(this,settingsFragmentViewModelFactory).get(SettingsViewModel::class.java)
+            settingsFragmentViewModelFactory = SettingsFragmentViewModelFactory(
+                Repository.getInstance(
+                    remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper),
+                    LocalDataSource.getInstance(
+                        WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO(),
+                        PreferenceManager.getDefaultSharedPreferences(this.context as Context)
+                    ),
+                    LocationDataSource.getInstance(
+                        LocationServices.getFusedLocationProviderClient(requireActivity())
+                    )
+                )
+            )
 
-
-        tempUnitPref = settingsViewModel.getTempUnit()
-        windSpeedPref = settingsViewModel.getWindSpeedUnit()
-        languagePref = settingsViewModel.getLanguage()
-        locationPref = settingsViewModel.getLocationSource()
-
-
-
-        numberFormat = NumberFormat.getInstance()
-
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(Repository.getInstance(remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper)
-            ,LocalDataSource.getInstance(WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO()
-                ,PreferenceManager.getDefaultSharedPreferences(this.context as Context)),
-            LocationDataSource.getInstance(LocationServices.getFusedLocationProviderClient(requireActivity())
-        )))
-
-        viewModel=ViewModelProvider(this,homeFragmentViewModelFactory).get(HomeViewModel::class.java)
+            settingsViewModel = ViewModelProvider(
+                this,
+                settingsFragmentViewModelFactory
+            ).get(SettingsViewModel::class.java)
 
 
+            tempUnitPref = settingsViewModel.getTempUnit()
+            windSpeedPref = settingsViewModel.getWindSpeedUnit()
+            languagePref = settingsViewModel.getLanguage()
+            locationPref = settingsViewModel.getLocationSource()
 
-       hourListAdapter = HomeFragmentHourlyListAdapter(tempUnitPref)
-        hourLayoutManager = LinearLayoutManager(this.context)
-        hourLayoutManager.orientation = RecyclerView.HORIZONTAL
-        binding.homeFragmentHourlyRecyclerView.apply {
-            adapter = hourListAdapter
-            layoutManager = hourLayoutManager
-        }
 
-       dayListAdapter = HomeFragmentDailyListAdapter()
-        dayLayoutManager = LinearLayoutManager(this.context)
-        dayLayoutManager.orientation = RecyclerView.VERTICAL
-        binding.homeFragmentDailyRecyclerView.apply {
-            adapter = dayListAdapter
-            layoutManager = dayLayoutManager
-        }
 
-        if (arguments?.getString("source")?:"home" == "fav")
-        {
-            var lat = arguments?.getDouble("lat") as Double
-            var lon = arguments?.getDouble("lon") as Double
-            viewModel.getForecastWeather(true,lat,lon,tempUnitPref,windSpeedPref)
-            viewModel.getCurrentWeather(true,lat,lon,tempUnitPref,windSpeedPref)
-        }
-        else {
-            viewModel.getWeather(true,tempUnitPref,windSpeedPref)
+            numberFormat = NumberFormat.getInstance()
 
-        }
+            homeFragmentViewModelFactory = HomeFragmentViewModelFactory(
+                Repository.getInstance(
+                    remoteDataSource = RemoteDataSource.getInstance(RetrofitHelper),
+                    LocalDataSource.getInstance(
+                        WeatherDataBase.getInstance(this.requireContext()).getWeatherDAO(),
+                        PreferenceManager.getDefaultSharedPreferences(this.context as Context)
+                    ),
+                    LocationDataSource.getInstance(
+                        LocationServices.getFusedLocationProviderClient(requireActivity())
+                    )
+                )
+            )
 
-        when (tempUnitPref){
-            "1" -> {binding.homeFragUnitTextView.text = getString(R.string.fahrenheit)}
-            "2" ->{binding.homeFragUnitTextView.text = getString(R.string.kelvin)}
-            else -> {binding.homeFragUnitTextView.text = getString(R.string.celsius)}
-        }
+            viewModel =
+                ViewModelProvider(this, homeFragmentViewModelFactory).get(HomeViewModel::class.java)
 
-        if (windSpeedPref == "1")
-            binding.homeFragmentWindSpeedUnitCardViewTextView.text = getString(R.string.mileperhou)
+
+
+            hourListAdapter = HomeFragmentHourlyListAdapter(tempUnitPref)
+            hourLayoutManager = LinearLayoutManager(this.context)
+            hourLayoutManager.orientation = RecyclerView.HORIZONTAL
+            binding.homeFragmentHourlyRecyclerView.apply {
+                adapter = hourListAdapter
+                layoutManager = hourLayoutManager
+            }
+
+            dayListAdapter = HomeFragmentDailyListAdapter()
+            dayLayoutManager = LinearLayoutManager(this.context)
+            dayLayoutManager.orientation = RecyclerView.VERTICAL
+            binding.homeFragmentDailyRecyclerView.apply {
+                adapter = dayListAdapter
+                layoutManager = dayLayoutManager
+            }
+        if (isOnline(this.context as Context))
+            isNetwork = true
         else
-            binding.homeFragmentWindSpeedUnitCardViewTextView.text = getString(R.string.meterpersec)
+            isNetwork = false
 
-        lifecycleScope.launch { viewModel.postWeatherStateFlow.collectLatest {
-            when(it){
-                is DataState.Success -> {
-                    dayListAdapter.submitList(it.data.dayList)
-                    hourListAdapter.submitList(it.data.hourList)
-                }
-                is DataState.Failure -> {}
-                else ->{} //do something
+        val geocoder = Geocoder(requireContext(), Locale("ar"))
+
+        binding.homeFragmentReloadButton.setOnClickListener{
+            if (isOnline(this.context as Context))
+                isNetwork = true
+            else
+                isNetwork = false
+
+            if (arguments?.getString("source") ?: "home" == "fav") {
+                var lat = arguments?.getDouble("lat") as Double
+                var lon = arguments?.getDouble("lon") as Double
+                viewModel.getForecastWeather(isNetwork, lat, lon, tempUnitPref, windSpeedPref)
+                viewModel.getCurrentWeather(isNetwork, lat, lon, tempUnitPref, windSpeedPref,geocoder)
+            } else {
+                viewModel.getWeather(isNetwork, tempUnitPref, windSpeedPref,geocoder)
 
             }
-        } }
-        lifecycleScope.launch { viewModel.postCurrentWeatherStateFlow.collectLatest {
-            when(it){
-                is DataState.SuccessCurrent -> {
-                    binding.homeFragmentCityTextView.text=it.data.name
-                    binding.homeFragmentWeatherDescriptionTextView.text = it.data.weather.get(0).description
-                    binding.homeFragmentMainTempDegree.text =numberFormat.format(it.data.main.temp.toInt())
-                    val date = convertUtcToLocalTime(it.data.dt.toLong(),it.data.timezone)
-                    Log.i("TAG", "onViewCreated: "+date)
-                    binding.homeFragTodayTextView.text = date
-                    binding.homeFragmentCurrentTime.text = " "
-                    val sunrise = getSunTime(it.data.sys.sunrise.toLong(),it.data.timezone)
-                binding.homeFragmentSunriseTextView.text = sunrise
-                    val sunset = getSunTime(it.data.sys.sunset.toLong(),it.data.timezone)
-                    binding.homeFragmentSunsetTextView.text = sunset
-                    binding.homeFragmentPressureTextView.text = numberFormat.format(it.data.main.pressure)
-                    binding.homeFragmentWindSpeedTextView.text = numberFormat.format(it.data.wind.speed)
-                    binding.homeFragmentCloudsTextView.text = numberFormat.format(it.data.clouds.all)
-                    binding.homeFragmentHumidityTextView.text = numberFormat.format(it.data.main.humidity)
-                    this@HomeFragment?.context?.let { it1 ->
-                        Glide.with(it1).load(URL + it.data.weather.get(0).icon +"@2x.png").apply(
-                            RequestOptions().override(150, 150)).into( binding.homeFragmentCardViewWeatherIcon)
+        }
+
+            if (arguments?.getString("source") ?: "home" == "fav") {
+                var lat = arguments?.getDouble("lat") as Double
+                var lon = arguments?.getDouble("lon") as Double
+                viewModel.getForecastWeather(isNetwork, lat, lon, tempUnitPref, windSpeedPref)
+                viewModel.getCurrentWeather(isNetwork, lat, lon, tempUnitPref, windSpeedPref,geocoder)
+            } else {
+                viewModel.getWeather(isNetwork, tempUnitPref, windSpeedPref,geocoder)
+
+            }
+
+            when (tempUnitPref) {
+                "1" -> {
+                    binding.homeFragUnitTextView.text = getString(R.string.fahrenheit)
+                }
+
+                "2" -> {
+                    binding.homeFragUnitTextView.text = getString(R.string.kelvin)
+                }
+
+                else -> {
+                    binding.homeFragUnitTextView.text = getString(R.string.celsius)
+                }
+            }
+
+            if (windSpeedPref == "1")
+                binding.homeFragmentWindSpeedUnitCardViewTextView.text =
+                    getString(R.string.mileperhou)
+            else
+                binding.homeFragmentWindSpeedUnitCardViewTextView.text =
+                    getString(R.string.meterpersec)
+
+            lifecycleScope.launch {
+                viewModel.postWeatherStateFlow.collectLatest {
+                    when (it) {
+                        is DataState.Success -> {
+                            dayListAdapter.submitList(it.data.dayList)
+                            hourListAdapter.submitList(it.data.hourList)
+                        }
+
+                        is DataState.Failure -> {}
+                        else -> {} //do something
+
                     }
-
-
                 }
-                is DataState.Failure -> {}
-                else ->{} //do something
-
             }
-        } }
+            lifecycleScope.launch {
+                viewModel.postCurrentWeatherStateFlow.collectLatest {
+                    when (it) {
+                        is DataState.SuccessCurrent -> {
+                            val currentLocale = Locale.getDefault() // Get the system's current locale
 
-    }
-    fun convertUtcToLocalTime(utcTimeInSeconds: Long, utcOffsetSeconds: Int): String {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.timeInMillis = utcTimeInSeconds * 1000
+                            if (currentLocale.language == "ar") {
+                                binding.homeFragmentCityTextView.text = it.data.nameArabic
+                                binding.homeFragmentWeatherDescriptionTextView.text =translateWeatherDescription(it.data.weather.get(0).description.toString(),Locale("ar"))
 
-        calendar.add(Calendar.MILLISECOND, utcOffsetSeconds*1000)
+                            } else {
+                                binding.homeFragmentCityTextView.text = it.data.name
+                                binding.homeFragmentWeatherDescriptionTextView.text =translateWeatherDescription(it.data.weather.get(0).description.toString(),Locale("en"))
 
-        val dateFormat = SimpleDateFormat("EEE, dd MMM hh:mm a")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+                            }
 
-        return dateFormat.format(calendar.time)
-    }
+                            binding.homeFragmentMainTempDegree.text =
+                                numberFormat.format(it.data.main.temp.toInt())
+                            val date = convertUtcToLocalTime(it.data.dt.toLong(), it.data.timezone)
+                            Log.i("TAG", "onViewCreated: " + date)
+                            binding.homeFragTodayTextView.text = date
+                            binding.homeFragmentCurrentTime.text = " "
+                            val sunrise = getSunTime(it.data.sys.sunrise.toLong(), it.data.timezone)
+                            binding.homeFragmentSunriseTextView.text = sunrise
+                            val sunset = getSunTime(it.data.sys.sunset.toLong(), it.data.timezone)
+                            binding.homeFragmentSunsetTextView.text = sunset
+                            binding.homeFragmentPressureTextView.text =
+                                numberFormat.format(it.data.main.pressure)
+                            binding.homeFragmentWindSpeedTextView.text =
+                                numberFormat.format(it.data.wind.speed)
+                            binding.homeFragmentCloudsTextView.text =
+                                numberFormat.format(it.data.clouds.all)
+                            binding.homeFragmentHumidityTextView.text =
+                                numberFormat.format(it.data.main.humidity)
+                            this@HomeFragment?.context?.let { it1 ->
+                                Glide.with(it1).load(URL + it.data.weather.get(0).icon + "@2x.png")
+                                    .apply(
+                                        RequestOptions().override(150, 150)
+                                    ).into(binding.homeFragmentCardViewWeatherIcon)
+                            }
+
+
+                        }
+
+                        is DataState.Failure -> {}
+                        else -> {} //do something
+
+                    }
+                }
+            }
+
+        }
+        fun convertUtcToLocalTime(utcTimeInSeconds: Long, utcOffsetSeconds: Int): String {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            calendar.timeInMillis = utcTimeInSeconds * 1000
+
+            calendar.add(Calendar.MILLISECOND, utcOffsetSeconds * 1000)
+
+            val dateFormat = SimpleDateFormat("EEE, dd MMM hh:mm a")
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+            return dateFormat.format(calendar.time)
+        }
+
     override fun onDestroyView() {
         super.onDestroyView()
         Log.i("TAG", "onDestroyView: ")

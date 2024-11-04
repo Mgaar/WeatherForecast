@@ -1,11 +1,14 @@
 package com.example.weatherforecast.ui.favourite.view
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -26,6 +29,7 @@ import com.example.weatherforecast.network.RetrofitHelper
 import com.example.weatherforecast.ui.favourite.viewmodel.FavouriteFragmentViewModelFactory
 import com.example.weatherforecast.ui.favourite.viewmodel.FavouriteViewModel
 import com.example.weatherforecast.ui.home.view.HomeFragment
+import com.example.weatherforecast.ui.isOnline
 import com.example.weatherforecast.ui.map.view.MapActivity
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
@@ -41,6 +45,7 @@ class FavouriteFragment : Fragment() {
     lateinit var favCityListAdapter: FavouriteFragmentListAdapter
     lateinit var favCityLayoutManager: LinearLayoutManager
 
+    lateinit var  builder: AlertDialog.Builder
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,23 +80,41 @@ favFragmentViewModelFactory = FavouriteFragmentViewModelFactory((Repository.getI
 
         favViewModel = ViewModelProvider(this,favFragmentViewModelFactory).get(FavouriteViewModel::class)
 
-        favCityListAdapter = FavouriteFragmentListAdapter({ val fragment = HomeFragment() // No arguments needed
-           this@FavouriteFragment.requireActivity().supportFragmentManager.commit {
-               binding.detailsLayout.visibility = View.VISIBLE
-               binding.favListLayout.visibility=View.GONE
-               val homeFragment = HomeFragment().apply {
-                   arguments = Bundle().apply {
-                       putDouble("lat", it.lat)
-                       putDouble("lon",it.lon)
-                       putString("source","fav")
-                   }
-               }
-               childFragmentManager.beginTransaction()
-                   .replace(binding.fragmentContainerView2.id, homeFragment)
-                   .addToBackStack("favdetail") // Optional, to allow back navigation
-                   .commit()
-           }}
-            ,{})
+        favCityListAdapter = FavouriteFragmentListAdapter(
+            {  val builder = AlertDialog.Builder(context)
+        builder.setMessage("If you proceed, you will remove ${it.city}")
+        builder.setPositiveButton("Proceed") { dialog, _ ->
+            favViewModel.removeFavCity(it)
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()},{
+            if (isOnline(this.context as Context))
+            {
+                val fragment = HomeFragment() // No arguments needed
+                this@FavouriteFragment.requireActivity().supportFragmentManager.commit {
+                    binding.detailsLayout.visibility = View.VISIBLE
+                    binding.favListLayout.visibility=View.GONE
+                    val homeFragment = HomeFragment().apply {
+                        arguments = Bundle().apply {
+                            putDouble("lat", it.lat)
+                            putDouble("lon",it.lon)
+                            putString("source","fav")
+                        }
+                    }
+                    childFragmentManager.beginTransaction()
+                        .replace(binding.fragmentContainerView2.id, homeFragment)
+                        .addToBackStack("favdetail") // Optional, to allow back navigation
+                        .commit()
+                }
+            }
+            else {
+                Toast.makeText(this.context,"NO INTERNET Connection ",Toast.LENGTH_SHORT).show()
+            }
+            }
+            )
         binding.floatingActionButton2.setOnClickListener{
 childFragmentManager.popBackStack()
             binding.detailsLayout.visibility = View.GONE
@@ -143,3 +166,5 @@ favCityListAdapter.submitList(it.data)
 
     }
 }
+
+

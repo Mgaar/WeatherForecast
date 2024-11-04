@@ -13,10 +13,10 @@ import kotlinx.coroutines.launch
 class SetNotificationDialogFragmentViewModel (val repo: Repository): ViewModel(){
 
 
-    fun addNotificationCity(lat:Double,lon: Double,city:String,country:String,time:String)
+    fun addNotificationCity(lat:Double,lon: Double,city:String,country:String,time:String, cityArabic:String, countryArabic:String)
     {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.addNotificatioCity(NotificationCity(lat,lon,city, country,time))
+            repo.addNotificatioCity(NotificationCity(lat,lon,city, country,time,cityArabic,countryArabic))
         }
 
     }

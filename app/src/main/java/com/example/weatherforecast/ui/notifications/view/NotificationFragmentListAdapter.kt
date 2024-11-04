@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.databinding.FavcityBinding
-import com.example.weatherforecast.model.FavCity
 import com.example.weatherforecast.model.NotificationCity
+import java.util.Locale
 
 
 class MyDiffUtil : DiffUtil.ItemCallback<NotificationCity>(){
@@ -39,11 +39,16 @@ class NotificationsFragmentListAdapter(val onCityClick : (NotificationCity) -> U
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
+        val currentLocale = Locale.getDefault()
+        if(currentLocale == Locale("ar"))
+        {
+            binding.textView.text=current.cityArabic+" "+current.countryArabic/*+":"+current.time*/
 
+        }else
+        {        binding.textView.text=current.city+" "+current.country/*+":"+current.time*/
+        }
 
-        binding.textView.text=current.city+" "+current.country/*+":"+current.time*/
-
-        binding.favFragDisplayButton.text = "X"
+//        binding.favFragDisplayButton.text = "X"
 
         binding.favFragDisplayButton.setOnClickListener { onCityClick(current)
         }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDAO {
-    @Query("SELECT * FROM weather_table WHERE id = 2")
+    @Query("SELECT * FROM weather_table WHERE id = 1")
      fun getWeatherByCityId(): Flow<WeatherDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

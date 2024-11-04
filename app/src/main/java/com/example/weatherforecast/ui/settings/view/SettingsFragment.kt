@@ -2,7 +2,7 @@ package com.example.weatherforecast.ui.settings.view
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -22,7 +22,7 @@ lateinit var intent: Intent
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.statusbar)) // Replace 'yourColor' with your color resource or color value
+        view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.statusbar))
         findPreference<ListPreference>("list_preference_1")
             ?.setOnPreferenceChangeListener { _, newValue ->
                 when (newValue){
@@ -30,9 +30,12 @@ lateinit var intent: Intent
                         ContextUtils.updateLocale(this@SettingsFragment.context as Context,
                             Locale("ar")
                         ); this@SettingsFragment.requireActivity().recreate()}
-                    "1"-> {ContextUtils.updateLocale(this@SettingsFragment.context as Context,Locale("ar")); this@SettingsFragment.requireActivity().recreate()}
-                else -> { ContextUtils.updateLocale(this@SettingsFragment.context as Context,
-                    Locale.getDefault()); this@SettingsFragment.requireActivity().recreate()}
+                    "1"-> {ContextUtils.updateLocale(this@SettingsFragment.context as Context,Locale("en"));
+                        this@SettingsFragment.requireActivity().recreate()}
+                "2" -> { ContextUtils.updateLocale(this@SettingsFragment.context as Context,
+                    getSystemLocale(this@SettingsFragment.context as Context));
+                    Log.i("TAG", "onViewCreated: "+ getSystemLocale(this@SettingsFragment.context as Context).language)
+                    this@SettingsFragment.requireActivity().recreate()}
                 }
                 true
             }
@@ -44,6 +47,14 @@ intent.putExtra("source","settings")
                 startActivity(intent)
             }
         true
+        }
+    }
+    fun getSystemLocale(context: Context): Locale {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales[0]
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.configuration.locale
         }
     }
 

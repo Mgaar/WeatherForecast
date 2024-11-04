@@ -41,7 +41,7 @@
                 android:layout_height="52dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/cardcolor"
-                android:text="@string/display"
+                android:text="@string/x"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.databinding.FavcityBinding
 import com.example.weatherforecast.model.FavCity
+import java.util.Locale
 
 
 class MyDiffUtil : DiffUtil.ItemCallback<FavCity>(){
@@ -38,8 +39,20 @@ class FavouriteFragmentListAdapter(val onCityClick : (FavCity) -> Unit,val onCar
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
-       binding.textView.text=current.city+" "+current.country
+        val currentLocale = Locale.getDefault()
+        if (currentLocale == Locale("ar"))
+        {
+            binding.textView.text=current.cityArabic+" "+current.countryArabic
+
+        }
+        else{
+            binding.textView.text=current.city+" "+current.country
+
+        }
         binding.favFragDisplayButton.setOnClickListener { onCityClick(current)
+        }
+        binding.cityCard.setOnClickListener{
+            onCardClick(current)
         }
     }
 }

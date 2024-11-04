@@ -46,9 +46,11 @@ class SetNotificationDialogFragment: DialogFragment() {
     var lon:Double=0.0
      var country:String = "N/A"
     var city:String = "N/A"
+    var countryArabic:String = "N/A"
+    var cityArabic:String = "N/A"
     var time = false
     var alarm = true
-private lateinit var  mapActivityLauncher:ActivityResultLauncher<Intent>
+    private lateinit var  mapActivityLauncher:ActivityResultLauncher<Intent>
     private lateinit var setNotificationDialogFragmentViewModelFactory: SetNotificationDialogFragmentViewModelFactory
     private lateinit var setNotificationDialogFragmentViewModel: SetNotificationDialogFragmentViewModel
 
@@ -104,6 +106,8 @@ private lateinit var  mapActivityLauncher:ActivityResultLauncher<Intent>
                 lon = result.data?.getDoubleExtra("lon",0.0)?:0.0
                 country =result.data?.getStringExtra("country")?:"N/A"
                 city =result.data?.getStringExtra("city")?:"N/A"
+                countryArabic =result.data?.getStringExtra("arabiccountry")?:"N/A"
+                cityArabic =result.data?.getStringExtra("arabiccity")?:"N/A"
                 binding.LocationTextView.text= country
                 Log.i("TAG", "onViewCreated: "+country)
             }
@@ -136,7 +140,7 @@ binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
             }
             if (time && country!="N/A")
             {
-setNotificationDialogFragmentViewModel.addNotificationCity(lat,lon,city,country,binding.timeTextView.text.toString())
+setNotificationDialogFragmentViewModel.addNotificationCity(lat,lon,city,country,cityArabic,countryArabic,binding.timeTextView.text.toString())
                 val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = Intent(context, WeatherAlarmReceiver::class.java)
                 intent.putExtra("lat",lat)

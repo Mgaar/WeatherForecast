@@ -31,9 +31,9 @@
     <string name="notification">اشعار</string>
 
 
-    <string name="celsius">C</string>
-    <string name="fahrenheit">F</string>
-    <string name="kelvin">K</string>
+    <string name="celsius">س</string>
+    <string name="fahrenheit">ف</string>
+    <string name="kelvin">ك</string>
 
     <string name="tempunit">الحرارة</string>
     <string name="windunit">سرعة الرياح</string>

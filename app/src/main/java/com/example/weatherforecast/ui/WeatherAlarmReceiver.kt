@@ -12,7 +12,6 @@ import android.media.RingtoneManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.NavOptions
 import androidx.preference.PreferenceManager
 import com.example.weatherforecast.R
 import com.example.weatherforecast.database.LocalDataSource
@@ -49,16 +48,21 @@ class WeatherAlarmReceiver : BroadcastReceiver() {
         val lat = intent.getDoubleExtra("lat", 0.0)
         val lon = intent.getDoubleExtra("lon", 0.0)
         val city = intent.getStringExtra("city")
-        val alarm = intent.getBooleanExtra("alarm", false)
-        Log.i("TAG", "onAlarmReceive: ")
-        GlobalScope.launch {
-            val cityFlow = repo.getCurrentWeatherUpdate(lat, lon)
-            repo.removeNotificationCityById(city as String)
-            cityFlow.collect { data ->
-                showNotification(context, data, city as String, alarm,lat,lon)
+        if (isOnline(context))
+        {
+            val alarm = intent.getBooleanExtra("alarm", false)
+            Log.i("TAG", "onAlarmReceive: ")
+            GlobalScope.launch {
+                val cityFlow = repo.getCurrentWeatherUpdate(lat, lon)
+                repo.removeNotificationCityById(city as String)
+                cityFlow.collect { data ->
+                    showNotification(context, data, city as String, alarm,lat,lon)
+                }
+
             }
 
         }
+
 
     }
 

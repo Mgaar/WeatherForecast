@@ -1,4 +1,6 @@
 package com.example.weatherforecast.ui.home.viewmodel
+import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class HomeViewModel(val repo: Repository) : ViewModel() {
 
@@ -30,14 +33,14 @@ class HomeViewModel(val repo: Repository) : ViewModel() {
 
     fun getGPSLocation(onLocationReceived: (Double, Double) -> Unit) = repo.getGPSLocation(onLocationReceived)
 
-    fun getWeather(isNetworkAvailable: Boolean,tempUnit:String,windSpeedUnit:String) {
+    fun getWeather(isNetworkAvailable: Boolean,tempUnit:String,windSpeedUnit:String,geocoder: Geocoder) {
        if(repo.getLocationPreferences() == "0")
        {
           getGPSLocation{lat,lon->
               this@HomeViewModel.lat = lat
               this@HomeViewModel.lon = lon
               getForecastWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
-              getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+              getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit,geocoder)
 
           }
        }
@@ -45,7 +48,7 @@ class HomeViewModel(val repo: Repository) : ViewModel() {
 lat = getMainLocationMapPreferencesLat().toDouble()
            lon = getMainLocationMapPreferencesLon().toDouble()
            getForecastWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
-           getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit)
+           getCurrentWeather(isNetworkAvailable,lat,lon,tempUnit,windSpeedUnit,geocoder)
 
        }
     }
@@ -57,8 +60,10 @@ lat = getMainLocationMapPreferencesLat().toDouble()
                 val flow = repo.getWeatherUpdate(lat,lon)
                 flow.catch { e -> _postWeatherStateFlow.value=DataState.Failure(e) }
                     .collect{ data ->
-                        repo.updateCachedWeather(data)
+                        data.id = 1
+                        Log.i("TAG", "getForecastWeathercache: "+data.toString())
                         HomeViewModel@parseWeatherList(data)
+                        repo.updateCachedWeather(data)
                         editTempUnitWeatherDTO(tempUnit,data)
                         _postWeatherStateFlow.value =DataState.Success(data)
                          }
@@ -70,18 +75,22 @@ lat = getMainLocationMapPreferencesLat().toDouble()
                 val flow = repo.getWeatherCached()
                 flow.catch { e -> _postWeatherStateFlow.value=DataState.Failure(e) }
                     .collect{ data ->
+                    //    HomeViewModel@parseWeatherList(data)
                         editTempUnitWeatherDTO(tempUnit,data)
                         _postWeatherStateFlow.value =DataState.Success(data) }
             }
         }
     }
-    fun getCurrentWeather(isNetworkAvailable: Boolean,lat:Double,lon:Double,tempUnit:String,windSpeedUnit:String) {
+    fun getCurrentWeather(isNetworkAvailable: Boolean,lat:Double,lon:Double,tempUnit:String,windSpeedUnit:String,geocoder: Geocoder) {
         _postCurrentWeatherStateFlow.value = DataState.Loading
         if (isNetworkAvailable) {
             viewModelScope.launch (Dispatchers.IO){
+                var address =  geocoder.getFromLocation(lat,lon,1)
                 val flow = repo.getCurrentWeatherUpdate(lat,lon)
                 flow.catch { e -> _postCurrentWeatherStateFlow.value=DataState.Failure(e) }
                     .collect{ data ->
+                        data.id=1
+                        data.nameArabic = address?.get(0)?.adminArea.toString()
                         repo.updateCurrentCachedWeather(data)
                         editTempUnitCurrentWeather(windSpeedUnit,tempUnit,data)
                         _postCurrentWeatherStateFlow.value =DataState.SuccessCurrent(data)

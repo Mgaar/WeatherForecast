@@ -39,6 +39,9 @@
     <string name="notfor">Notification For</string>
     <string name="alarm">Alarm</string>
     <string name="notification">Notification</string>
+    <string name="nointernet"><![CDATA[No Internet Connection \n Please Connect & Retry]]></string>
+    <string name="nointer">No Internet</string>
+    <string name="x">x</string>
 
     <string-array name="languagesoptions">
         <item>Arabic</item>
